@@ -1,0 +1,51 @@
+<form class="layui-form" action="" id="editRoleForm" onsubmit="return false">
+    <input type="hidden" value="{$info['id']}" name="id"/>
+    <div class="layui-form-item">
+        <label class="layui-form-label l_font">角色名称</label>
+        <div class="layui-input-block">
+            <input name="name" lay-verify="required" autocomplete="off" value="{$info['name']}" placeholder="请输入角色名称"
+                   class="layui-input" type="text">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label l_font">角色描述</label>
+        <div class="layui-input-block">
+            <textarea name="remark" placeholder="请输入角色描述" class="layui-textarea">{$info['remark']}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label l_font">状态</label>
+        <div class="layui-input-block">
+            <input name="status" value="1" title="启用" {eq name="$info['status']" value="1" }checked="checked" {/eq}
+            type="radio">
+            <input name="status" value="2" title="禁用" {eq name="$info['status']" value="2" }checked="checked" {/eq}
+            type="radio">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="subEditRole">修改</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    layui.use(['form','element'],function () {
+       var eForm=layui.form;
+        eForm.render();
+        eForm.on('submit(subEditRole)',function () {
+            $.ajax({
+                type: 'post',
+                url: "{:url('Role/subEditRole')}",
+                dataType:'json',
+                data: $('#editRoleForm').serializeArray(),
+                success: function (data) {
+                    if (data.code == 1) {
+                        layer.alert(data.msg);
+                    } else {
+                        layer.alert(data.msg);
+                    }
+                }
+            });
+        });
+    });
+</script>

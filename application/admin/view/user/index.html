@@ -1,0 +1,58 @@
+<style type="text/css">
+    .dfrom{
+        min-height: 20px;
+        padding: 19px;
+        margin-top: 10px;
+        background-color: #ecf0f1;
+        border: 1px solid transparent;
+        border-radius: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.05);
+    }
+</style>
+<div class="r_content">
+    <i class="layui-icon" style="font-size: 16px; color: #1E9FFF;">&#xe715;</i>
+    <span class="layui-breadcrumb" lay-separator=">">
+      <a href="" id="shouye">首页</a>
+      <a href="">用户管理</a>
+      <a><cite>用户列表</cite></a>
+    </span>
+
+    <div class="dfrom">
+        用户id：
+        <div class="layui-input-inline">
+            <input name="date" id="date" lay-verify="date" placeholder="请输入用户ID" autocomplete="off" class="layui-input" type="text">
+        </div>
+        关键字：
+        <div class="layui-input-inline">
+            <input name="date" id="date" lay-verify="date" placeholder="用户名/昵称/邮箱" autocomplete="off" class="layui-input" type="text">
+        </div>
+        <button class="layui-btn layui-btn-primary margin_l_15">搜  索</button>
+    </div>
+    <table id="userList" class="layui-hide"></table>
+</div>
+<script type="text/javascript">
+    layui.use(['element','table'],function () {
+        var element=layui.element,layuiTable=layui.table;
+        element.init();
+
+        layuiTable.render({
+            elem:'#userList',
+            url:"{:url('User/userList')}",
+            cols:[[
+                {field:'id',width:80,title:'id',align:'center'},
+                {field:'user_login',width:120,title:'用户名',align:'center'},
+                {field:'user_nickname',width:150,title:'昵称',align:'center'},
+                {field:'avatar',width:160,title:'头像',align:'center',templet:'<img src="{{d.avatar}}">'},
+                {field:'user_email',width:150,title:'邮箱',align:'center'},
+                {field:'mobile',width:180,title:'手机',align:'center'},
+                {field:'create_time',width:250,title:'注册时间',align:'center'},
+                {field:'last_login_time',width:250,title:'最后登录时间',align:'center'},
+                {field:'last_login_ip',width:200,title:'最后登录IP',align:'center'},
+                {field:'user_status',width:100,title:'状态',align:'center'}
+                ]],
+            id:'idList',
+            page:true,
+        });
+    });
+</script>

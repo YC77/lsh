@@ -1,0 +1,169 @@
+<style>
+    .l_font{
+        font-family: "Source Sans Pro",Calibri,Candara,Arial,sans-serif;
+        font-weight: 900;
+        font-size: 14px;
+        color: #2C3E50;
+    }
+</style>
+<div class="r_content">
+    <i class="layui-icon" style="font-size: 16px; color: #1E9FFF;">&#xe715;</i>
+    <span class="layui-breadcrumb" lay-separator=">">
+      <a href="" id="shouye">首页</a>
+      <a href="">角色管理</a>
+      <a><cite>角色列表</cite></a>
+    </span>
+    <div class="layui-tab layui-tab-card" lay-filter="roleTab">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="roleList">角色列表</li>
+            <li lay-id="roleAdd">角色添加</li>
+        </ul>
+        <div class="layui-tab-content" >
+            <div class="layui-tab-item layui-show">
+                <table class="layui-hide" id="roleList" lay-filter="roleTable"></table>
+            </div>
+            <div class="layui-tab-item">
+                <form class="layui-form" action="" id="roleForm" onsubmit="return false">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label l_font">直属上级</label>
+                        <div onclick="higherLevel()" style="font-size: 14px;font-weight: 600;">
+                            请选择
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label l_font">角色名称</label>
+                        <div class="layui-input-block">
+                            <input name="name" lay-verify="required" autocomplete="off" placeholder="请输入角色名称" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label l_font">角色描述</label>
+                        <div class="layui-input-block">
+                            <textarea name="remark" placeholder="请输入角色描述" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label l_font">状态</label>
+                        <div class="layui-input-block">
+                            <input name="status" value="1" title="启用" checked="" type="radio">
+                            <input name="status" value="2" title="禁用" type="radio">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit="" lay-filter="subRole">立即提交</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var layuiTable;
+    layui.use(['element','table','form','layer'],function () {
+        var element=layui.element,layuiTable=layui.table,form=layui.form,layer=layui.layer;
+        element.render();
+        form.render();
+        layuiTable.render({
+            elem:'#roleList',
+            url:"{:url('Role/roleList')}",
+            cols:[[
+            {field:'id',width:80,title:'ID',align:'center'},
+            {field:'name',width:150,title:'角色名称',align:'center'},
+            {field:'remark',width:250,title:'角色描述',align:'center'},
+            {field:'status',width:80,title:'状态',align:'center'},
+            {field:'right',width:150,title:'操作',align:'center',toolbar:'#barDemo'}
+            ]],
+            id:'idList',
+            page:true
+        });
+
+        //触发事件
+        var active = {
+            tabAdd: function(id){
+                $.ajax({
+                    type:'post'
+                    ,url:"{:url('Role/editRole')}"
+                    ,dataType:'json'
+                    ,data:{id:id}
+                   ,success:function (data) {
+                        if(data.code==1){
+                            //新增一个Tab项
+                            element.tabAdd('roleTab', {
+                                title: '编辑角色' //用于演示
+                                ,content: data.data
+                                ,id: 'editRole' //实际使用一般是规定好的id，这里以时间戳模拟下
+                            });
+                            element.tabChange('roleTab', 'editRole');
+                        }else{
+                            layer.alert(data.msg);
+                        }
+
+                    }
+                });
+            }
+            ,tabDelete: function(othis){
+                //删除指定Tab项
+                element.tabDelete('roleTab', othis); //删除：“商品管理”
+            }
+            ,tabChange: function(){
+                //切换到指定Tab项
+                element.tabChange('roleTab', 'editRole'); //切换到：用户管理
+            }
+        };
+
+        //监听table的操作点击
+        layuiTable.on('tool(roleTable)',function (obj) {
+            var data=obj.data;
+            if(obj.event==='edit'){
+                active.tabAdd(data.id);
+            }
+        });
+
+        //监听tab切换
+        element.on('tab(roleTab)',function (data) {
+            if($(this).attr('lay-id')=='roleList'||$(this).attr('lay-id')=='roleAdd'){
+                active.tabDelete('editRole');
+            }
+            if($(this).attr('lay-id')=='roleList'){
+                layuiTable.reload('idList',{});
+            }
+        });
+
+        //监听form表单提交
+        form.on('submit(subRole)',function () {
+            $.ajax({
+                url:"{:url('Role/addRole')}",
+                type:"post",
+                dataType:"json",
+                data:$('#roleForm').serializeArray(),
+                success:function (data) {
+                    if(data.code==1){
+                        layer.alert(data.msg);
+                    }else{
+                        layer.alert(data.msg);
+                    }
+                }
+            });
+        });
+    });
+    
+    function higherLevel() {
+        layui.use(['layer'],function () {
+            var layer=layui.layer;
+            layer.open({
+                type:2,
+                title:'选择直属上级',
+                area:['500px','800px'],
+                content:"{:url('Role/higherLevel')}"
+            });
+        })
+    }
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="detail">权限设置</a>
+    <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+</script>

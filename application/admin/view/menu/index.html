@@ -1,0 +1,246 @@
+<div class="r_content">
+    <i class="layui-icon" style="font-size: 16px; color: #1E9FFF;">&#xe715;</i>
+    <span class="layui-breadcrumb" lay-separator=">">
+      <a href="" id="shouye">首页</a>
+      <a href="">菜单管理</a>
+      <a><cite>菜单列表</cite></a>
+    </span>
+<style type="text/css">
+    .higherLevel {
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 0 2px 2px 0;
+        padding-right: 30px;
+        height: 36px;
+        cursor: pointer;
+        width: 148px;
+        line-height: 38px;
+        border: 1px solid #e6e6e6;
+        display: inline-block;
+        padding-left: 10px;
+    }
+    .addForm{
+        width:470px;
+        margin-top: 20px
+    }
+</style>
+    <div class="layui-tab layui-tab-brief" lay-filter="menuTab">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="menuList">菜单列表</li>
+            <li lay-id="addMenu">新增菜单</li>
+        </ul>
+        <div class="layui-tab-content" style="height: 100px;">
+            <div class="layui-tab-item layui-show">
+                <table class="layui-hide"  id="menuList" lay-filter="menuTable"></table>
+            </div>
+            <div class="layui-tab-item">
+                <form id="menuform" class="layui-form layui-form-pane addForm" action="" onsubmit="return false;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属上级</label>
+                        <div class="layui-input-inline">
+                            <span onclick="higherLevel()" class="higherLevel">请选择...</span>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单类型</label>
+                        <div class="layui-input-inline">
+                            <select name="menuType" id="menuType">
+                                <option value="">请选择</option>
+                                <option value="1">只作为菜单</option>
+                                <option value="2">有界面可访问菜单</option>
+                                <option value="3">无界面可访问菜单</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单名称</label>
+                        <div class="layui-input-inline">
+                            <input name="name" id="name" autocomplete="off" placeholder="请输入菜单名称" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">应用名</label>
+                        <div class="layui-input-inline">
+                            <input name="app" id="app" autocomplete="off" placeholder="请输入应用名" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">控制器</label>
+                        <div class="layui-input-inline">
+                            <input name="controller" id="controller" autocomplete="off" placeholder="请输入控制器" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">操作名称</label>
+                        <div class="layui-input-inline">
+                            <input name="action" id="action" autocomplete="off" placeholder="请输入操作名称" class="layui-input" type="text">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单状态</label>
+                        <div class="layui-input-inline">
+                            <input name="status" value="1" value="启用" title="启用" checked="checked" type="radio">
+                            <input name="status" value="0" value="禁用" title="禁用" type="radio">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text" style="width: 450px;">
+                        <label class="layui-form-label">备注</label>
+                        <div class="layui-input-block">
+                            <textarea placeholder="请输入菜单备注" class="layui-textarea" name="remark"></textarea>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-warm" lay-submit lay-filter="add">添加</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        var layuiTable;
+        layui.use(['form', 'element','layer','table','laytpl'], function(){
+            var element = layui.element,layuiTable=layui.table,form = layui.form,layer=layui.layer,laytpl=layui.laytpl;
+            element.init();
+            form.render();
+            layuiTable.render({
+                elem:'#menuList',
+                url:"{:url('Menu/menuList')}" ,
+                cols:[[
+                    {field:'id',width:80,align:'center',title:'ID'},
+                    {field:'name',width:150,align:'center',title:'名称'},
+                    {field:'status',width:150,align:'center',title:'启用',templet:'#statusTpl'},
+                    {field:'remark',width:300,align:'center',title:'备注'},
+                    {field:'right',width:150,align:'center',title:'操作',toolbar:'#barDemo'}
+                ]],
+                id:'idList',
+                page:true
+            });
+            
+            form.on('submit(add)',function () {
+                var menuType=$('#menuType').val();
+                var name=$('#name').val();
+                var app=$('#app').val();
+                var controller=$('#controller').val();
+                var action=$('#action').val();
+                if(menuType.length==0){
+                    layer.tips('请选择菜单类型', '.layui-select-title',{tips:[2,'#0FA6D8']});
+                    return false;
+                }
+                if(name.length==0){
+                    layer.tips('请输入菜单名称', '#name',{tips:[2,'#0FA6D8']});
+                    return false;
+                }
+                if(app.length==0){
+                    layer.tips('请输入应用名称', '#app',{tips:[2,'#0FA6D8']});
+                    return false;
+                }
+                if(controller.length==0){
+                    layer.tips('请输入控制器名称', '#controller',{tips:[2,'#0FA6D8']});
+                    return false;
+                }
+                if(action.length==0){
+                    layer.tips('请输入操作名称', '#action',{tips:[2,'#0FA6D8']});
+                    return false;
+                }
+                $.ajax({
+                    type:'post',
+                    url:"{:url('Menu/addMenu')}",
+                    dataType:'json',
+                    data:$('#menuform').serializeArray(),
+                    success:function (data) {
+                        if(data.code==1){
+                            layer.open({
+                                title:'操作提示',
+                                content:'添加菜单成功',
+                                btn: ['返回列表','继续添加'],
+                                yes:function () {
+                                    var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                    parent.layer.close(index);//关闭弹出的子页面窗口
+                                },
+                                btn2:function () {
+                                    layer.close(layer.index);
+                                    return false;
+                                }
+                            });
+                        }else{
+                            layer.alert(data.msg);
+                        }
+                    }
+                });
+            });
+
+            layuiTable.on('tool(menuTable)',function (obj) {
+                var data=obj.data;
+                if(obj.event==='edit'){
+                    $.ajax({
+                        type:'post'
+                        ,url:"{:url('Menu/editMenuPage')}"
+                        ,dataType:'json'
+                        ,data:{id:data.id}
+                        ,success:function (info) {
+                            if(info.code==1){
+                                //新增一个Tab项
+                                element.tabAdd('menuTab', {
+                                    title: '编辑菜单' //用于演示
+                                    ,content: info.data
+                                    ,id: 'editMenu' //实际使用一般是规定好的id，这里以时间戳模拟下
+                                });
+                                element.tabChange('menuTab', 'editMenu');
+                            }else{
+                                layer.alert(info.msg);
+                            }
+                        }
+                    });
+                }
+            });
+
+            element.on('tab(menuTab)',function () {
+                if($(this).attr('lay-id')=='menuList'||$(this).attr('lay-id')=='addMenu'){
+                    element.tabDelete('menuTab','editMenu');
+                }
+                if($(this).attr('lay-id')=='menuList'){
+                    layuiTable.reload('idList',{});
+                }
+            })
+
+
+        });
+        function higherLevel() {
+            layui.use(['layer'],function () {
+                var layer=layui.layer;
+                layer.open({
+                    type:2,
+                    title:'选择直属上级',
+                    area:['500px','800px'],
+                    content:"{:url('Role/higherLevel')}"
+                });
+            })
+        }
+
+        $('#addMenu').click(function () {
+            layui.use('layer',function () {
+                var layer=layui.layer;
+                layer.open({
+                    type:2,
+                    content:"{:url('Menu/addMenu')}",
+                    title:'添加菜单',
+                    area:['600px','650px'],
+                    end:function () {
+                        $('.layui-body').load("{:url('Menu/index')}");
+                    }
+                });
+            });
+        });
+</script>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+</script>
+
+<script type="text/html" id="statusTpl">
+    {{#if(d.status==1){ }}
+    启用
+    {{#}else{ }}
+    禁用
+    {{# } }}
+</script>

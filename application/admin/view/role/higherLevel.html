@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/plugin/layui/css/layui.css"  media="all">
+</head>
+<body>
+<div class="layui-collapse" lay-accordion="">
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">文豪</h2>
+        <div class="layui-colla-content layui-show">
+
+            <div class="layui-collapse" lay-accordion="">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">唐代</h2>
+                    <div class="layui-colla-content layui-show">
+
+                        <div class="layui-collapse" lay-accordion="">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">杜甫</h2>
+                                <div class="layui-colla-content layui-show">
+                                    伟大的诗人
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">李白</h2>
+                                <div class="layui-colla-content">
+                                    <p>据说是韩国人</p>
+                                </div>
+                            </div>
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">王勃</h2>
+                                <div class="layui-colla-content">
+                                    <p>千古绝唱《滕王阁序》</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">宋代</h2>
+                    <div class="layui-colla-content">
+                        <p>比如苏轼、李清照</p>
+                    </div>
+                </div>
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">当代</h2>
+                    <div class="layui-colla-content">
+                        <p>比如贤心</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">科学家</h2>
+        <div class="layui-colla-content">
+            <p>伟大的科学家</p>
+        </div>
+    </div>
+    <div class="layui-colla-item">
+        <h2 class="layui-colla-title">艺术家</h2>
+        <div class="layui-colla-content">
+            <p>浑身散发着艺术细胞</p>
+        </div>
+    </div>
+</div>
+<script src="/static/plugin/layui/layui.js" charset="utf-8"></script>
+<script src="/static/js/jquery-2.1.4.min.js" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['element'],function () {
+        var element=layui.element;
+    })
+</script>
+</body>
+</html>
